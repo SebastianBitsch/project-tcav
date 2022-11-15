@@ -38,17 +38,12 @@ import argparse
 from tensorflow.io import gfile
 import imagenet_and_broden_fetcher as fetcher
 
-def make_concepts_targets_and_randoms(source_dir, number_of_images_per_folder, number_of_random_folders):
+def make_concepts_targets_and_randoms(source_dir:str, number_of_images_per_folder:int, number_of_random_folders:int, imagenet_classes:list, broden_concepts:list):
     # Run script to download data to source_dir
     if not gfile.exists(source_dir):
         gfile.makedirs(source_dir)
     if not gfile.exists(os.path.join(source_dir,'broden1_224/')) or not gfile.exists(os.path.join(source_dir,'inception5h')):
         subprocess.call(['bash' , 'FetchDataAndModels.sh', source_dir])
-
-    # Determine classes that we will fetch
-    # TODO: Add as an argument in case we want to change to other concepts
-    imagenet_classes = ['zebra']
-    broden_concepts = ['striped', 'dotted', 'zigzagged']
 
     # make targets from imagenet
     imagenet_dataframe = fetcher.make_imagenet_dataframe("./imagenet_url_map.csv")
@@ -79,7 +74,9 @@ if __name__ == '__main__':
     #                     help='Name for the directory where we will create the data.')
     parser.add_argument('--number_of_images_per_folder', type=int, help='Number of images to be included in each folder')
     parser.add_argument('--number_of_random_folders', type=int, help='Number of folders with random examples that we will generate for tcav')
-    parser.add_argument("--data_path", type=str, nargs="?", const="data", help="The name of the folder where the data is stored, defaults to data")
+    parser.add_argument("--data_path", type=str, nargs="?", default="data", help="The name of the folder where the data is stored, defaults to data")
+    parser.add_argument("--targets", type=str, nargs="+", default=["zebra"], help="The name of imagenet classes to use, defaults to zebra")
+    parser.add_argument("--concepts", type=str, nargs="+", default=['striped', 'dotted', 'zigzagged'], help="The broden concepts to use, defaults to 'striped, dotted, zigzagged'")
 
     args = parser.parse_args()
 
@@ -90,6 +87,6 @@ if __name__ == '__main__':
         gfile.makedirs(os.path.join(source_dir))
         print("Created source directory at " + source_dir)
     # Make data
-    make_concepts_targets_and_randoms(source_dir, args.number_of_images_per_folder, args.number_of_random_folders)
+    make_concepts_targets_and_randoms(source_dir, args.number_of_images_per_folder, args.number_of_random_folders, args.targets, args.concepts)
     print("Successfully created data at " + source_dir)
 
