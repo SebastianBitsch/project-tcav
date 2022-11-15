@@ -29,18 +29,9 @@ if __name__ == '__main__':
     cav_dir = working_dir + '/cavs/'
     source_dir = working_dir + f'/{args.data_path}/'
 
-    #TODO: add as a arg
-    bottlenecks = ['mixed3a','mixed3b','mixed4a','mixed4b','mixed4c','mixed4d','mixed4e','mixed5a','mixed5b']
-
     utils.make_dir_if_not_exists(activation_dir)
     utils.make_dir_if_not_exists(working_dir)
     utils.make_dir_if_not_exists(cav_dir)
-
-    # this is a regularizer penalty parameter for linear classifier to get CAVs. 
-    alphas = [0.1]   
-
-    target = args.target
-    concepts = ["dotted","striped","zigzagged"] #TODO: add as a arg
 
     sess = utils.create_session()
 
@@ -53,17 +44,15 @@ if __name__ == '__main__':
     mymodel = model.GoogleNetWrapper_public(sess, GRAPH_PATH, LABEL_PATH)
     act_generator = act_gen.ImageActivationGenerator(mymodel, source_dir, activation_dir, max_examples=100)
 
-    num_random_exp = args.num_random_exp
-
     mytcav = tcav.TCAV(
-        sess,
-        target,
-        concepts,
-        bottlenecks,
-        act_generator,
-        alphas,
-        cav_dir=cav_dir,
-        num_random_exp=num_random_exp
+        sess = sess,
+        target = args.target,
+        concepts = ["dotted","striped","zigzagged"],
+        bottlenecks = ['mixed3a','mixed3b','mixed4a','mixed4b','mixed4c','mixed4d','mixed4e','mixed5a','mixed5b'],
+        activation_generator = act_generator,
+        alphas = [0.1],
+        cav_dir = cav_dir,
+        num_random_exp = args.num_random_exp
     )
     
     print('This may take a while... Go get corny!')
