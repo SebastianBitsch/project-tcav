@@ -46,6 +46,7 @@ def make_concepts_targets_and_randoms(source_dir, number_of_images_per_folder, n
         subprocess.call(['bash' , 'FetchDataAndModels.sh', source_dir])
 
     # Determine classes that we will fetch
+    # TODO: Add as an argument in case we want to change to other concepts
     imagenet_classes = ['zebra']
     broden_concepts = ['striped', 'dotted', 'zigzagged']
 
@@ -76,14 +77,13 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Create examples and concepts folders.')
     # parser.add_argument('--source_dir', type=str,
     #                     help='Name for the directory where we will create the data.')
-    parser.add_argument('--number_of_images_per_folder', type=int,
-                        help='Number of images to be included in each folder')
-    parser.add_argument('--number_of_random_folders', type=int,
-                        help='Number of folders with random examples that we will generate for tcav')
+    parser.add_argument('--number_of_images_per_folder', type=int, help='Number of images to be included in each folder')
+    parser.add_argument('--number_of_random_folders', type=int, help='Number of folders with random examples that we will generate for tcav')
+    parser.add_argument("--data_path", type=str, nargs="?", const="data", help="The name of the folder where the data is stored, defaults to data")
 
     args = parser.parse_args()
 
-    source_dir = "~/tcav/data"
+    source_dir = "tcav/" + args.data_path
 
     # create folder if it doesn't exist
     if not gfile.exists(source_dir):
