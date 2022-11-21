@@ -12,6 +12,7 @@
 #BSUB -u s204163@dtu.dk
 #BSUB -B
 #BSUB -N
+#BSUB -Ne
 
 #BSUB -J python3 download_and_make_datasets.py --number_of_images_per_folder=2 --number_of_random_folders=2
 #BSUB -J python3 tcav_hpc.py --num_exp=2 --save_file_name=results_20221121
