@@ -12,7 +12,3 @@
 #BSUB -Ne
 python3 download_and_make_datasets.py --number_of_images_per_folder=2 --number_of_random_folders=2
 python3 tcav_hpc.py --num_exp=2 --save_file_name=results_20221121
-
-
-
-
