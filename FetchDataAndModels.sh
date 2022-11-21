@@ -34,7 +34,7 @@ echo "starting download"
 # Download inception. Model will be saved as classify_image_graph_def.pb
 curl -O http://storage.googleapis.com/download.tensorflow.org/models/inception5h.zip
 mkdir "inception5h"
-unzip - inception5h.zip -d "inception5h/"
+unzip -q inception5h.zip -d "inception5h/"
 rm inception5h.zip
 #
 #
@@ -42,7 +42,7 @@ rm inception5h.zip
 # Download mobilenet
 curl -O https://storage.googleapis.com/mobilenet_v2/checkpoints/mobilenet_v2_1.0_224.tgz
 mkdir "mobilenet_v2_1.0_224"
-tar -xzvf mobilenet_v2_1.0_224.tgz -C "mobilenet_v2_1.0_224/"
+tar -xzf mobilenet_v2_1.0_224.tgz -C "mobilenet_v2_1.0_224/"
 rm mobilenet_v2_1.0_224.tgz
 
 
@@ -51,7 +51,7 @@ rm mobilenet_v2_1.0_224.tgz
 # Download dataset concepts from CSAIL
 curl -O http://netdissect.csail.mit.edu/data/broden1_224.zip
 mkdir "broden1_224"
-unzip broden1_224.zip -d broden1_224
+unzip -q broden1_224.zip -d broden1_224
 rm broden1_224.zip
 
 cd $CUR_DIR
