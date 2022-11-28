@@ -68,6 +68,8 @@ def make_imagenet_dataframe(path_to_imagenet_classes):
   urls_dataframe["url"] = kImagenetBaseUrl + urls_dataframe["synid"]
   return urls_dataframe
 
+#@contextmanager
+
 """ Downloads an image.
 
 Downloads and image from a image url provided and saves it under path.
@@ -80,26 +82,51 @@ Filters away images that are corrupted or smaller than 10KB
   Raises:
     Exception: Propagated from PIL.image.verify()
 """
+import signal
+
+class TimeoutException(Exception): pass
+
+def time_limit(seconds):
+    def signal_handler(signum, frame):
+        raise TimeoutException("Times out")
+
+    signal.signal(signal.SIGALRM, signal_handler)
+    signal.alarm(seconds)
+    try:
+        yield
+    finally:
+        signal.alarm(0)
+
+
+TIMELIMIT = 5
+
+
 def download_image(path, url):
-  image_name = url.split("/")[-1]
-  image_name = image_name.split("?")[0]
-  image_prefix = image_name.split(".")[0]
-  saving_path = os.path.join(path, image_prefix + ".jpg")
-  urllib.request.urlretrieve(url, saving_path)
+    image_name = url.split("/")[-1]
+    image_name = image_name.split("?")[0]
+    image_prefix = image_name.split(".")[0]
+    saving_path = os.path.join(path, image_prefix + ".jpg")
+    #urllib.request.urlretrieve(url, saving_path)
 
-  try:
-    # Throw an exception if the image is unreadable or corrupted
-    Image.open(saving_path).verify()
+    try:
+        with time_limit(TIMELIMIT):
+            urllib.request.urlretrieve(url, saving_path)
+    except TimeoutException as e:
+        A = 0
 
-    # Remove images smaller than 10kb, to make sure we are not downloading empty/low quality images
-    if tf.io.gfile.stat(saving_path).length < kMinFileSize:
-      tf.io.gfile.remove(saving_path)
-  # PIL.Image.verify() throws a default exception if it finds a corrupted image.
-  except Exception as e:
-    tf.io.gfile.remove(
-        saving_path
-    )  # We need to delete it, since urllib automatically saves them.
-    raise e
+    try:
+        # Throw an exception if the image is unreadable or corrupted
+        Image.open(saving_path).verify()
+
+        # Remove images smaller than 10kb, to make sure we are not downloading empty/low quality images
+        if tf.io.gfile.stat(saving_path).length < kMinFileSize:
+            tf.io.gfile.remove(saving_path)
+    # PIL.Image.verify() throws a default exception if it finds a corrupted image.
+    except Exception as e:
+        tf.io.gfile.remove(
+            saving_path
+        )  # We need to delete it, since urllib automatically saves them.
+        raise e
 
 
 """ For a imagenet label, fetches all URLs that contain this image, from the main URL contained in the dataframe

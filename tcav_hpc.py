@@ -60,6 +60,5 @@ if __name__ == '__main__':
     results = mytcav.run(run_parallel=False)
     print('done!')
 
-
     with open(f"results/{args.save_filename}.json", "w") as outfile:
         json.dump(results, outfile)
