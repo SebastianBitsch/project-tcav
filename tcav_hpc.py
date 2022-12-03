@@ -8,6 +8,7 @@ import tcav.model  as model
 import tcav.tcav as tcav
 import tcav.utils as utils
 
+# python3 tcav_hpc.py --num_exp=5 --save_name=results_100_5_20221129
 
 if __name__ == '__main__':
     # Parse arguments

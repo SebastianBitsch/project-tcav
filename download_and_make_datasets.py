@@ -1,6 +1,8 @@
 # run on mac
 # https://developer.apple.com/metal/tensorflow-plugin/
 
+# python3 download_and_make_datasets.py --num_images=100 --num_folders=5
+
 import subprocess
 import os
 import argparse
