@@ -1,4 +1,3 @@
-# SKAL LIGGE I ØVERSTE MAPPE
 import json
 import argparse
 
@@ -22,7 +21,10 @@ if __name__ == '__main__':
     parser.add_argument("--concepts", type=str, nargs="+", default=['striped', 'dotted', 'zigzagged'], help="The broden concepts to use, defaults to 'striped, dotted, zigzagged'")
     
     args = parser.parse_args()
-
+    print("Arguments: ")
+    for arg in vars(args):
+        print("--", arg,": ", getattr(args, arg))
+    
     model_to_run = args.model_to_run
     
     # where activations are stored (only if your act_gen_wrapper does so)
@@ -41,8 +43,8 @@ if __name__ == '__main__':
     LABEL_PATH = 'tcav/data/inception5h/imagenet_comp_graph_label_strings.txt'
 
     mymodel = model.GoogleNetWrapper_public(sess, GRAPH_PATH, LABEL_PATH)
-    act_generator = act_gen.ImageActivationGenerator(mymodel, source_dir, activation_dir, max_examples=100)
-
+    act_generator = act_gen.ImageActivationGenerator(mymodel, source_dir, activation_dir, max_examples=120)
+    
     mytcav = tcav.TCAV(
         sess = sess,
         target = args.target,
