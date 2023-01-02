@@ -1,3 +1,4 @@
+import os
 import json
 import argparse
 
@@ -28,10 +29,10 @@ if __name__ == '__main__':
     model_to_run = args.model_to_run
     
     # where activations are stored (only if your act_gen_wrapper does so)
-    working_dir = "tcav"
-    activation_dir =  working_dir + '/activations/'
-    cav_dir = working_dir + '/cavs/'
-    source_dir = working_dir + '/data/'
+    working_dir = os.chmod()
+    activation_dir =  working_dir + '/tcav/activations/'
+    cav_dir = working_dir + '/tcav/cavs/'
+    source_dir = working_dir + '/tcav/data/'
 
     utils.make_dir_if_not_exists(working_dir)
     utils.make_dir_if_not_exists(activation_dir)
