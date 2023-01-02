@@ -3,7 +3,7 @@ import time
 
 """
 File for running the tcav framework on different datasets in one call.
-Here we use it to generate results for all of our noisy data (10% to 100%) using the RUNTCAV_NOISY.py file
+Here we use it to generate results for all of our noisy data (10% to 100%) using the RUNTCAV.py file
 The results are saved to to json in results/
 """
 
@@ -17,7 +17,7 @@ for i in range(10):
 
     print(f"**** STARTING TO RUN {data_dir} ****")
 
-    subprocess.call(['python3', 'RUNTCAV_NOISY.py', "--data_dir", data_dir])
+    subprocess.call(['python3', 'RUNTCAV.py', "--data_dir", data_dir])
     end = time.time()
 
     print(f"**** FINISHED RUNNING {data_dir}: IN {str(end - start)} ****")
