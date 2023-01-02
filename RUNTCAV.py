@@ -21,22 +21,20 @@ import os
 
 absl.logging.set_verbosity(0)
 
-# Global parameters - these are set and not changed in any of our experiments for consistency
-num_random_exp = 5
-num_images = 120
-bottlenecks = ['mixed3a','mixed3b','mixed4a','mixed4b','mixed4c','mixed4d','mixed4e','mixed5a','mixed5b']
-target = 'zebra'
-concepts = ["dotted","striped","zigzagged"]
 
 # this is a regularizer penalty parameter for linear classifier to get CAVs. 
 alphas = [0.1]
-
 
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Create examples and concepts folders.')
     parser.add_argument("--data_dir", type=str, help="the name of the folder the data is stored in (/tcav/tcav_examples/image_models/imagenet/data/XXXX). Results will be saved under same name")
-    
+    parser.add_argument("--num_random_exp", type=int, default=5, help="The number of random experiments, the same as the number of random folders")
+    parser.add_argument("--num_images", type=int, default=120, help="The number of images to use")
+    parser.add_argument("--target", type=str, nargs="?", default="zebra", help="The taget of the model, defaults to zebra")
+    parser.add_argument("--bottlenecks", type=str, nargs="+", default=['mixed3a','mixed3b','mixed4a','mixed4b','mixed4c','mixed4d','mixed4e','mixed5a','mixed5b'], help="The layers to look at")
+    parser.add_argument("--concepts", type=str, nargs="+", default=['striped', 'dotted', 'zigzagged'], help="The broden concepts to use, defaults to 'striped, dotted, zigzagged'")
+
     args = parser.parse_args()
 
     working_dir = os.getcwd()
@@ -59,16 +57,16 @@ if __name__ == '__main__':
 
     _model = model.GoogleNetWrapper_public(sess, GRAPH_PATH, LABEL_PATH)
 
-    act_generator = act_gen.ImageActivationGenerator(_model, source_dir, activation_dir, max_examples=num_images)
+    act_generator = act_gen.ImageActivationGenerator(_model, source_dir, activation_dir, max_examples = args.num_images)
 
     _tcav = tcav.TCAV(sess,
-                    target,
-                    concepts,
-                    bottlenecks,
+                    args.target,
+                    args.concepts,
+                    args.bottlenecks,
                     act_generator,
                     alphas,
                     cav_dir=cav_dir,
-                    num_random_exp=num_random_exp)
+                    num_random_exp=args.num_random_exp)
 
     print ('This may take a while... Go get corny!')
     
@@ -76,6 +74,6 @@ if __name__ == '__main__':
     print ('done!')
 
     # Save the resulting scores
-    with open(f"results/results_{args.data_dir}_{num_images}_{num_random_exp}.json", "w") as outfile:
+    with open(f"results/results_{args.data_dir}_{args.num_images}_{args.num_random_exp}.json", "w") as outfile:
         json.dump(results, outfile)
 
