@@ -1,6 +1,5 @@
 /.DS_Store
-/Papers
-/tcav/data/
+/papers
 /tcav/cavs/
 /tcav/activations/
 __pycache__
